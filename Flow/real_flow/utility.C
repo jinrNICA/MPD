@@ -34,7 +34,7 @@ Double_t Chi(Double_t res, Int_t harm) //harm = 1 or 2 for our case
 
   Double_t chi   = 2.0;
   Double_t delta = 1.0;
-  for(int i = 0; i < 15; i++)
+  for(int i = 0; i < 50; i++)
   {
    if(ResEventPlane(chi, harm) < res) { chi = chi + delta ; }
    else                         { chi = chi - delta ; }

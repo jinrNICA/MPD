@@ -605,6 +605,8 @@ void MpdCalculator::CalculateResolutions(Int_t nevents)
 				h2_phi_vs_eta_after[cenrality_bin_res][sort]->Fill(ATan2(Sin(phi_mpd[track]),Cos(phi_mpd[track])),eta_mpd[track]);
 				//~ p_momenta_resolution[sort]->Fill(Abs(signed_pt_mpd[track]),Abs(Abs(signed_pt_mpd[track]) - pt_mc[id_from_mc_mpd[track]])
 				//~ /Abs(signed_pt_mpd[track]));
+			} else {
+				continue;
 			}
 			
 			//~ if (Abs(eta_mpd[track]) > Cut_Eta_Min) //and finally, the resolution gap eta cut, then filling the buffer of EP particles:

@@ -72,34 +72,34 @@ void get_multiplicity(TString inFileName , TString outFileName , TString dcaFile
 
 	    Long_t n_tracks_mpd=0;
 	    for (Int_t track = 0;track<MpdGlobalTracks->GetEntriesFast();track++){
-		MpdTrack* mpdtrack = (MpdTrack*) MpdGlobalTracks->UncheckedAt(track);
-		
-		
-		pt_bin=-1;
-		eta_bin=-1;
-		if (mpdtrack->GetNofHits()<n_hit_cut) continue;
+			MpdTrack* mpdtrack = (MpdTrack*) MpdGlobalTracks->UncheckedAt(track);
+			
+			
+			pt_bin=-1;
+			eta_bin=-1;
+			if (mpdtrack->GetNofHits()<n_hit_cut) continue;
 
-		for (Int_t i_pt=0;i_pt<n_pt_bin;i_pt++)
-		    if (TMath::Abs(mpdtrack->GetPt())>=pt_bins[i_pt] && TMath::Abs(mpdtrack->GetPt())<=pt_bins[i_pt+1]) pt_bin=i_pt;
-		for (Int_t i_eta=0;i_eta<n_eta_bin;i_eta++)
-		    if (mpdtrack->GetEta()>eta_bins[i_eta] && mpdtrack->GetEta()<=eta_bins[i_eta+1]) eta_bin=i_eta;
+			for (Int_t i_pt=0;i_pt<n_pt_bin;i_pt++)
+				if (TMath::Abs(mpdtrack->GetPt())>=pt_bins[i_pt] && TMath::Abs(mpdtrack->GetPt())<=pt_bins[i_pt+1]) pt_bin=i_pt;
+			for (Int_t i_eta=0;i_eta<n_eta_bin;i_eta++)
+				if (mpdtrack->GetEta()>eta_bins[i_eta] && mpdtrack->GetEta()<=eta_bins[i_eta+1]) eta_bin=i_eta;
 
-		if (pt_bin==-1) continue;
-		if (eta_bin==-1) continue;
-		Double_t Pt = TMath::Abs(mpdtrack->GetPt());
-		TF1 sigma_fit_X = *f_pt_fit[0][eta_bin];
-		TF1 sigma_fit_Y = *f_pt_fit[1][eta_bin];
-		TF1 sigma_fit_Z = *f_pt_fit[2][eta_bin];
+			if (pt_bin==-1) continue;
+			if (eta_bin==-1) continue;
+			Double_t Pt = TMath::Abs(mpdtrack->GetPt());
+			TF1 sigma_fit_X = *f_pt_fit[0][eta_bin];
+			TF1 sigma_fit_Y = *f_pt_fit[1][eta_bin];
+			TF1 sigma_fit_Z = *f_pt_fit[2][eta_bin];
 
-		if (TMath::Abs(mpdtrack->GetDCAX()) >= sigma_fit_X(Pt)*2) continue;
-		if (TMath::Abs(mpdtrack->GetDCAY()) >= sigma_fit_Y(Pt)*2) continue;
-		if (TMath::Abs(mpdtrack->GetDCAZ()) >= sigma_fit_Z(Pt)*2) continue;
-				
+			if (TMath::Abs(mpdtrack->GetDCAX()) >= sigma_fit_X(Pt)*2) continue;
+			if (TMath::Abs(mpdtrack->GetDCAY()) >= sigma_fit_Y(Pt)*2) continue;
+			if (TMath::Abs(mpdtrack->GetDCAZ()) >= sigma_fit_Z(Pt)*2) continue;
+					
 
-		if (TMath::Abs(mpdtrack->GetEta())>1.5) continue;
-		if (TMath::Abs(mpdtrack->GetPt())<0 && TMath::Abs(mpdtrack->GetPt())>3) continue;
-		
-		n_tracks_mpd++;
+			if (TMath::Abs(mpdtrack->GetEta())>1.5) continue;
+			if (TMath::Abs(mpdtrack->GetPt())<0 && TMath::Abs(mpdtrack->GetPt())>3) continue;
+			
+			n_tracks_mpd++;
 	    }
 		
 	    if (n_tracks_mpd>0){ 
