@@ -37,7 +37,7 @@ bool BinningData::SetEtaId(int id)
     return true;
 }
 
-int BinningData::GetPtBin(Float_t fValue)
+int BinningData::GetPtBin(Float_t fValue) const
 {
 	int pt_bin = -1;
 	for (int i = 0; i < NptBins; ++i)
@@ -46,7 +46,7 @@ int BinningData::GetPtBin(Float_t fValue)
 	return pt_bin;
 }
 
-int BinningData::GetEtaBin(Float_t fValue)
+int BinningData::GetEtaBin(Float_t fValue) const
 {
 	int eta_bin = -1;
 	for (int i = 0; i < NetaBins; ++i)
@@ -55,13 +55,13 @@ int BinningData::GetEtaBin(Float_t fValue)
 	return eta_bin;
 }
 
-Float_t BinningData::GetPtBinContent(int iValue)
+Float_t BinningData::GetPtBinContent(int iValue) const
 {
     NptBins++;
     return ptBins[iValue];
 }
 
-Float_t BinningData::GetEtaBinContent(int iValue)
+Float_t BinningData::GetEtaBinContent(int iValue) const
 {
     NetaBins++;
     return etaBins[iValue];
@@ -106,12 +106,12 @@ void BinningData::SetEtaBins(Float_t fValue[], int dim)
     }
 }
 
-int BinningData::GetPtBinSize()
+int BinningData::GetPtBinSize() const
 {
     return NptBins;
 }
 
-int BinningData::GetEtaBinSize()
+int BinningData::GetEtaBinSize() const
 {
     return NetaBins;
 }

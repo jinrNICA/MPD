@@ -9,12 +9,12 @@ class BinningData {
     public:
         BinningData();
         ~BinningData();
-        int GetPtBin(Float_t fValue);
-        int GetEtaBin(Float_t fValue);
-        Float_t GetPtBinContent(int iValue);
-        Float_t GetEtaBinContent(int iValue);
-        int GetPtBinSize();
-        int GetEtaBinSize();
+        int GetPtBin(Float_t fValue) const;
+        int GetEtaBin(Float_t fValue) const;
+        Float_t GetPtBinContent(int iValue) const;
+        Float_t GetEtaBinContent(int iValue) const;
+        int GetPtBinSize() const;
+        int GetEtaBinSize() const;
 
         void SetPtBinContent(Float_t fValue);
         void SetPtBins(Float_t *fValue, int dim);
