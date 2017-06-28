@@ -11,14 +11,28 @@ BinningData::~BinningData()
 
 }
 
-void BinningData::SetPtId(int id)
+bool BinningData::SetPtId(int id)
 {
+    if ((id < 0) || (id > _MAX_PT_BINS))
+    {
+        cout << "Error! BinningData::SetPtId - Wrong bin number";
+        return false;
+    }
+    
     NptBins=id;
+    return true;
 }
 
-void BinningData::SetEtaId(int id)
+bool BinningData::SetEtaId(int id)
 {
+    if ((id < 0) || (id > _MAX_ETA_BINS))
+    {
+        cout << "Error! BinningData::SetEtaId - Wrong bin number";
+        return false;
+    }
+    
     NetaBins=id;
+    return true;
 }
 
 int BinningData::GetPtBin(Float_t fValue)
@@ -75,6 +89,12 @@ void BinningData::NextEta()
 
 void BinningData::SetPtBins(Float_t fValue[], int dim)
 {
+    if (dim < 0)
+    {
+        cout << "Error!"
+    }
+    
+    
     if (dim > 0 && dim < _MAX_PT_BINS){
         SetPtId(dim);
         for (int i=0;i<dim;i++){
