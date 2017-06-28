@@ -7,8 +7,8 @@
 
 class BinningData {
     public:
-        BinnigData();
-        ~BinnigData();
+        BinningData();
+        ~BinningData();
         int GetPtBin(Float_t fValue);
         int GetEtaBin(Float_t fValue);
         Float_t GetPtBinContent(int iValue);
