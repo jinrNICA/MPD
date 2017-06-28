@@ -39,20 +39,16 @@ bool BinningData::SetEtaId(int id)
 
 int BinningData::GetPtBin(Float_t fValue) const
 {
-	int pt_bin = -1;
-	for (int i = 0; i < NptBins; ++i)
-	if ((fValue > ptBins[i]) && (fValue <= ptBins[i + 1])) 
-		pt_bin = i;
-	return pt_bin;
+    Float_t *endBins = ptBins + NptBins;
+    int *f = std::lower_bound(ptBins, endBins, fValue);
+	return (f == ptBins || f == endBins) ? -1 : (f - ptBins) - 1;
 }
 
 int BinningData::GetEtaBin(Float_t fValue) const
 {
-	int eta_bin = -1;
-	for (int i = 0; i < NetaBins; ++i)
-	if ((fValue > etaBins[i]) && (fValue <= etaBins[i + 1])) 
-		eta_bin = i;
-	return eta_bin;
+    Float_t *endBins = etaBins + NptBins;
+    int *f = std::lower_bound(etaBins, endBins, fValue);
+	return (f == etaBins || f == endBins) ? -1 : (f - etaBins) - 1;
 }
 
 Float_t BinningData::GetPtBinContent(int iValue) const
@@ -93,7 +89,7 @@ void BinningData::SetPtBins(Float_t fValue[], int dim)
 {
     if (SetPtId(dim) && checkBinsAray(fValue, dim))
     {
-        std::copy(fValue, fValue + (dim + 1), ptBins); //dim+1 because dim bins requires dim+1 points!
+        std::copy(fValue, fValue + dim, ptBins);
     }
 }
  
@@ -102,7 +98,7 @@ void BinningData::SetEtaBins(Float_t fValue[], int dim)
 {
     if (SetEtaId(dim) && checkBinsAray(fValue, dim))
     {
-        std::copy(fValue, fValue + (dim + 1), etaBins); //dim+1 because dim bins requires dim+1 points!
+        std::copy(fValue, fValue + dim, etaBins); 
     }
 }
 
@@ -118,7 +114,7 @@ int BinningData::GetEtaBinSize() const
 
 bool BinningData::checkBinsAray(Float_t *fValue, int dim)
 {
-    for (int i = 0; i < dim; i++)
+    for (int i = 0; i < (dim - 1); i++)
     {
         if (fValue[i] >= fValue[i + 1])
         {
