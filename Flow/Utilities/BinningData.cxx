@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <iostream>
 
 #include "BinningData.h"
 
@@ -39,15 +40,15 @@ bool BinningData::SetEtaId(int id)
 
 int BinningData::GetPtBin(Float_t fValue) const
 {
-    Float_t *endBins = ptBins + NptBins;
-    int *f = std::lower_bound(ptBins, endBins, fValue);
+    const Float_t *endBins = ptBins + NptBins;
+    const Float_t *f = std::lower_bound(ptBins, endBins, fValue);
 	return (f == ptBins || f == endBins) ? -1 : (f - ptBins) - 1;
 }
 
 int BinningData::GetEtaBin(Float_t fValue) const
 {
-    Float_t *endBins = etaBins + NptBins;
-    int *f = std::lower_bound(etaBins, endBins, fValue);
+    const Float_t *endBins = etaBins + NptBins;
+    const Float_t *f = std::lower_bound(etaBins, endBins, fValue);
 	return (f == etaBins || f == endBins) ? -1 : (f - etaBins) - 1;
 }
 
