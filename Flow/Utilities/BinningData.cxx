@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "BinningData.h"
 
 BinningData::BinningData()
@@ -89,27 +91,18 @@ void BinningData::NextEta()
 
 void BinningData::SetPtBins(Float_t fValue[], int dim)
 {
-    if (dim < 0)
+    if (SetPtId(dim))
     {
-        cout << "Error!"
-    }
-    
-    
-    if (dim > 0 && dim < _MAX_PT_BINS){
-        SetPtId(dim);
-        for (int i=0;i<dim;i++){
-            ptBins[i] = fValue[i];
-        }
+        std::copy(fValue, fValue+dim+1, ptBins);
     }
 }
+ 
 
 void BinningData::SetEtaBins(Float_t fValue[], int dim)
 {
-    if (dim > 0 && dim <_MAX_ETA_BINS){
-        SetEtaId(dim);
-        for (int i=0;i<dim;i++){
-            etaBins[i] = fValue[i];
-        }
+    if (SetEtaId(dim))
+    {
+        std::copy(fValue, fValue+dim+1, etaBins);
     }
 }
 
