@@ -91,16 +91,16 @@ void BinningData::NextEta()
 
 void BinningData::SetPtBins(Float_t fValue[], int dim)
 {
-    if (SetPtId(dim))
+    if (SetPtId(dim) && checkBinsAray(fValue, dim))
     {
         std::copy(fValue, fValue + (dim + 1), ptBins); //dim+1 because dim bins requires dim+1 points!
     }
 }
  
 
-void BinningData::SetEtaBins(Float_t fValue[], int d
+void BinningData::SetEtaBins(Float_t fValue[], int dim)
 {
-    if (SetEtaId(dim))
+    if (SetEtaId(dim) && checkBinsAray(fValue, dim))
     {
         std::copy(fValue, fValue + (dim + 1), etaBins); //dim+1 because dim bins requires dim+1 points!
     }
