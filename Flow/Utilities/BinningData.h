@@ -22,15 +22,19 @@ class BinningData {
         void SetEtaBins(Float_t *fValues, int dim);
 
     private:
-        void SetPtId(int id);
-        void SetEtaId(int id);
+        bool SetPtId(int id);
+        bool SetEtaId(int id);
         void NextPt();
         void NextEta();
+        
+        bool checkBinsArray(Float_t *fValue, int dim);
 
         int NptBins;
         int NetaBins;
         Float_t ptBins[_MAX_PT_BINS];
         Float_t etaBins[_MAX_ETA_BINS];
+        
+        
 
 };
 

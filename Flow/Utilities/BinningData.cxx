@@ -17,7 +17,7 @@ bool BinningData::SetPtId(int id)
 {
     if ((id < 0) || (id > _MAX_PT_BINS))
     {
-        cout << "Error! BinningData::SetPtId - Wrong bin number";
+        std::cout << "Error! BinningData::SetPtId - Wrong bin number" << endl;
         return false;
     }
     
@@ -29,7 +29,7 @@ bool BinningData::SetEtaId(int id)
 {
     if ((id < 0) || (id > _MAX_ETA_BINS))
     {
-        cout << "Error! BinningData::SetEtaId - Wrong bin number";
+        std::cout << "Error! BinningData::SetEtaId - Wrong bin number" << endl;
         return false;
     }
     
@@ -93,16 +93,16 @@ void BinningData::SetPtBins(Float_t fValue[], int dim)
 {
     if (SetPtId(dim))
     {
-        std::copy(fValue, fValue+dim+1, ptBins);
+        std::copy(fValue, fValue + (dim + 1), ptBins); //dim+1 because dim bins requires dim+1 points!
     }
 }
  
 
-void BinningData::SetEtaBins(Float_t fValue[], int dim)
+void BinningData::SetEtaBins(Float_t fValue[], int d
 {
     if (SetEtaId(dim))
     {
-        std::copy(fValue, fValue+dim+1, etaBins);
+        std::copy(fValue, fValue + (dim + 1), etaBins); //dim+1 because dim bins requires dim+1 points!
     }
 }
 
@@ -114,4 +114,19 @@ int BinningData::GetPtBinSize()
 int BinningData::GetEtaBinSize()
 {
     return NetaBins;
+}
+
+bool BinningData::checkBinsAray(Float_t *fValue, int dim)
+{
+    for (int i = 0; i < dim; i++)
+    {
+        if (fValue[i] >= fValue[i + 1])
+        {
+            std::cout << "Error! BinningData::checkBinsAray - wrong borders of " << i << "'s bin!" << endl;
+            return false;
+        }
+        
+    }
+    
+    return true;
 }
