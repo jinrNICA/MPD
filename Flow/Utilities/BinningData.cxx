@@ -47,7 +47,7 @@ int BinningData::GetPtBin(Float_t fValue) const
 
 int BinningData::GetEtaBin(Float_t fValue) const
 {
-    const Float_t *endBins = etaBins + NptBins;
+    const Float_t *endBins = etaBins + NetaBins;
     const Float_t *f = std::lower_bound(etaBins, endBins, fValue);
 	return (f == etaBins || f == endBins) ? -1 : (f - etaBins) - 1;
 }
