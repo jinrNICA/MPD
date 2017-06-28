@@ -54,13 +54,11 @@ int BinningData::GetEtaBin(Float_t fValue) const
 
 Float_t BinningData::GetPtBinContent(int iValue) const
 {
-    NptBins++;
     return ptBins[iValue];
 }
 
 Float_t BinningData::GetEtaBinContent(int iValue) const
 {
-    NetaBins++;
     return etaBins[iValue];
 }
 
@@ -88,7 +86,7 @@ void BinningData::NextEta()
 
 void BinningData::SetPtBins(Float_t fValue[], int dim)
 {
-    if (SetPtId(dim) && checkBinsAray(fValue, dim))
+    if (SetPtId(dim) && checkBinsArray(fValue, dim))
     {
         std::copy(fValue, fValue + dim, ptBins);
     }
@@ -97,7 +95,7 @@ void BinningData::SetPtBins(Float_t fValue[], int dim)
 
 void BinningData::SetEtaBins(Float_t fValue[], int dim)
 {
-    if (SetEtaId(dim) && checkBinsAray(fValue, dim))
+    if (SetEtaId(dim) && checkBinsArray(fValue, dim))
     {
         std::copy(fValue, fValue + dim, etaBins); 
     }
@@ -113,13 +111,13 @@ int BinningData::GetEtaBinSize() const
     return NetaBins;
 }
 
-bool BinningData::checkBinsAray(Float_t *fValue, int dim)
+bool BinningData::checkBinsArray(Float_t *fValue, int dim)
 {
     for (int i = 0; i < (dim - 1); i++)
     {
         if (fValue[i] >= fValue[i + 1])
         {
-            std::cout << "Error! BinningData::checkBinsAray - wrong borders of " << i << "'s bin!" << endl;
+            std::cout << "Error! BinningData::checkBinsArray - wrong borders of " << i << "'s bin!" << endl;
             return false;
         }
         

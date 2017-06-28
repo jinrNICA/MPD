@@ -27,7 +27,7 @@ class BinningData {
         void NextPt();
         void NextEta();
         
-        bool checkBinsArray(Float_t *fValue, int dim);
+        static bool checkBinsArray(Float_t *fValue, int dim);
 
         int NptBins;
         int NetaBins;
