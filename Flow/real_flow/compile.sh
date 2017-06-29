@@ -5,6 +5,6 @@ source /cvmfs/hades.gsi.de/install/5.34.34/hydra2-4.9n/defall.sh
 
 root -l <<EOF
 gSystem->Load("libMathMore")
-.L utility.C+
+.L ../Utilities/utility.C+
 .L MpdCalculator.C+
 EOF
