@@ -62,8 +62,8 @@ void get_dca(TString inFileName , TString outFileName)
 	    for (int track = 0; track < MpdGlobalTracks->GetEntriesFast(); ++track)
 	    {
 			MpdTrack *mpdtrack = (MpdTrack*) MpdGlobalTracks->UncheckedAt(track); 
-			Int_t pt_bin = GetPtBin(TMath::Abs(mpdtrack->GetPt()));
-			Int_t eta_bin = GetEtaBin(mpdtrack->GetEta());
+			Int_t pt_bin = bins->GetPtBin(TMath::Abs(mpdtrack->GetPt()));
+			Int_t eta_bin = bins->GetEtaBin(mpdtrack->GetEta());
 			if ( (eta_bin == -1) || (pt_bin == -1 )) continue;
 			h_dca[0][pt_bin][eta_bin]->Fill(mpdtrack->GetDCAX());
 			h_dca[1][pt_bin][eta_bin]->Fill(mpdtrack->GetDCAY());

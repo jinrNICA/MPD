@@ -1,4 +1,3 @@
-#define _MAX_TRACKS 200000
 #define _N2_ZDC 225
 #define _N_ZDC 15
 #define _N_MODULES_TOTAL 90
@@ -72,7 +71,7 @@ class reducedTreeCreator
 		long int mc_side[_MAX_TRACKS][10];
 		long int mpd_side[_MAX_TRACKS];
 
-		BinningData* bins = new BinningData;
+		BinningData* bins = new BinningData();
 		FormKinematicBins(bins);
 
 		const int n_pt_bin = bins->GetPtBinSize();

@@ -2,7 +2,7 @@
 
 #define UTILITY_H
 
-#define _MAX_TRACKS 5000
+#define _MAX_TRACKS 200000
 #define _N_ARM 2 // 3 IS FULL DETECTOR
 #define _N_HARM 2
 #define _N_SORTS 4
