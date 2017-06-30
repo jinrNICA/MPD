@@ -1,13 +1,24 @@
+#include <TMath.h>
+#include <TSystem.h>
+#include <TFile.h>
+#include <TTree.h>
+#include <TString.h>
+
+#include "TROOT.h"
+#include <TH1.h>
+
+#include <iostream>
+
+#include "../Utilities/utility.h"
+
 void MakeFitDCA(TString inFileName, TString outFileName)
 {
 	
-	const float ptBins[] = {0.,0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.5, 3.};
-	const int NptBins = 12;
+	BinningData* bins = new BinningData;
+	FormKinematicBins(bins);
 
-	const float etaBins[] = {-1.5,-1.2,-1.,-0.8,-0.6,-0.4,-0.2,0.,0.2,0.4,0.6,0.8,1.,1.2,1.5};
-	const int NetaBins = 14;
-
-	const int Ndim = 3;
+	const int NptBins = bins->GetPtBinSize();
+	const int NetaBins = bins->GetEtaBinSize();
 
 	const float par[] = {0.,0.,0.,0.,0.};
 

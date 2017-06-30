@@ -12,21 +12,19 @@
 #include <FairMCTrack.h>
 #include <TH1.h>
 
+#include "../Utilities/utility.h"
+
 #include <iostream>
-
-int GetPtBin(Float_t pt);
-int GetEtaBin(Float_t eta);
-
-const float ptBins[] = {0.,0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.5, 3.};
-const int NptBins = 12;
-
-const float etaBins[] = {-1.5,-1.2,-1.,-0.8,-0.6,-0.4,-0.2,0.,0.2,0.4,0.6,0.8,1.,1.2,1.5};
-const int NetaBins = 14;
-
-const int Ndim = 3;
 
 void get_dca(TString inFileName , TString outFileName)
 {	
+
+	BinningData* bins = new BinningData;
+	FormKinematicBins(bins);
+
+	const int NptBins = bins->GetPtBinSize();
+	const int NetaBins = bins->GetEtaBinSize();
+
 	TH1F* h_dca[Ndim][NptBins][NetaBins];
 	
 	char name[200];
@@ -39,7 +37,7 @@ void get_dca(TString inFileName , TString outFileName)
 			for (int etabin = 0; etabin < NetaBins; ++etabin)
 			{
 				sprintf(name,"h_dca[%i][%i][%i]",dim,ptbin,etabin);
-				sprintf(title,"DCA distribution for %.2f < p_{t} < %.2f and %.2f < #eta < %.2f", ptBins[ptbin], ptBins[ptbin+1],etaBins[etabin],etaBins[etabin+1]);
+				sprintf(title,"DCA distribution for %.2f < p_{t} < %.2f and %.2f < #eta < %.2f", bins->GetPtBinContent(ptbin), bins->GetPtBinContent(ptbin+1),bins->GetEtaBinContent(etabin),bins->GetEtaBinContent(etabin+1));
 				h_dca[dim][ptbin][etabin] = new TH1F(name,title,4000,-50.,50);
 			}
 		}
@@ -84,22 +82,4 @@ void get_dca(TString inFileName , TString outFileName)
 			}
 		}
 	}
-}
-
-int GetPtBin(Float_t pt)
-{
-	int pt_bin = -1;
-	for (int i = 0; i < NptBins; ++i)
-	if ((pt > ptBins[i]) && (pt <= ptBins[i + 1])) 
-		pt_bin = i;
-	return pt_bin;
-}
-
-int GetEtaBin(Float_t eta)
-{
-	int eta_bin = -1;
-	for (int i = 0; i < NetaBins; ++i)
-	if ((eta > etaBins[i]) && (eta <= etaBins[i + 1])) 
-		eta_bin = i;
-	return eta_bin;
 }

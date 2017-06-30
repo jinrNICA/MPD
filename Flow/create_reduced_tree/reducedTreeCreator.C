@@ -33,18 +33,20 @@
 #include <MpdKalmanTrack.h> 
 #include <MpdVertex.h>
 
+#include "../Utilities/utility.h"
+
 using std::cout;
 using std::endl;
 using TMath::ATan2;
 
 #define	NmultiplicityBins 100
 
-const Float_t pt_bins[]={0.,0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.5, 3.};
+/*const Float_t pt_bins[]={0.,0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.5, 3.};
 const Int_t   n_pt_bin = 12;
 
 const Float_t eta_bins[]={-1.5,-1.2,-1.,-0.8,-0.6,-0.4,-0.2,0.,0.2,0.4,0.6,0.8,1.,1.2,1.5};
-const Int_t   n_eta_bin = 14;
-const Int_t   n_proj    = 3;
+const Int_t   n_eta_bin = 14;*/
+const Int_t   n_proj    = Ndim;
 
 const Int_t   n_hits_cut= 32;
 
@@ -70,7 +72,11 @@ class reducedTreeCreator
 		long int mc_side[_MAX_TRACKS][10];
 		long int mpd_side[_MAX_TRACKS];
 
+		BinningData* bins = new BinningData;
+		FormKinematicBins(bins);
 
+		const int n_pt_bin = bins->GetPtBinSize();
+		const int n_eta_bin = bins->GetEtaBinSize();
 
 		TFile* dcaFile;
 		//TF1*   f_dca[n_proj][n_pt_bin][n_eta_bin];

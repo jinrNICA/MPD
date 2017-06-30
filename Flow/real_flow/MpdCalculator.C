@@ -14,6 +14,9 @@ MpdCalculator::MpdCalculator(TString inFileName , TString outFileName, TString d
 	
 	dcaFile = new TFile(dcaFileName.Data(),"READ");
 
+	bins = new BinningData;
+	FormKinematicBins(bins);
+
 	inChain->SetBranchAddress("b_mc",&b_mc);
 	inChain->SetBranchAddress("centrality_tpc_mpd",&centrality_tpc_mpd);
 	inChain->SetBranchAddress("n_tracks_mc",&n_tracks_mc);
@@ -429,8 +432,8 @@ void MpdCalculator::CalculateResolutions(Int_t nevents)
 		 //~ | (__ | |_| || |_ \__ \
 		  //~ \___| \__,_| \__||___/
 			
-			Int_t pt_bin = GetPtBin(pt_mc[track]);
-			Int_t eta_bin = GetEtaBin(eta_mc[track]);
+			Int_t pt_bin = bins->GetPtBin(pt_mc[track]);
+			Int_t eta_bin = bins->GetEtaBin(eta_mc[track]);
 			if ( (eta_bin == -1) || (pt_bin == -1 )) continue;
 			if (mother_ID_mc[track] > -1) continue;
 			
@@ -479,8 +482,8 @@ void MpdCalculator::CalculateResolutions(Int_t nevents)
 	 //~ |_| |_||_| \__|\___/  \__, ||_|   \__,_||_| |_| |_||___/ |_.__/  \___||_|  \___/ |_|   \___|  \___| \__,_| \__||___/
 							//~ __/ |                                                                                        
 						   //~ |___/  
-			Int_t pt_bin = GetPtBin(Abs(signed_pt_mpd[track]));
-			Int_t eta_bin = GetEtaBin(eta_mpd[track]); 
+			Int_t pt_bin = bins->GetPtBin(Abs(signed_pt_mpd[track]));
+			Int_t eta_bin = bins->GetEtaBin(eta_mpd[track]); 
 			
 			h_DCA_all[0][pt_bin][eta_bin]->Fill(DCA_x_mpd[track]);
 			h_DCA_all[1][pt_bin][eta_bin]->Fill(DCA_y_mpd[track]);
@@ -542,8 +545,8 @@ void MpdCalculator::CalculateResolutions(Int_t nevents)
 		  //~ \___| \__,_| \__||___/
 			
 			//if (id_from_mc_mpd[track] == -1) continue; //equivalent to mother id cut
-			pt_bin = GetPtBin(Abs(signed_pt_mpd[track]));
-			eta_bin = GetEtaBin(eta_mpd[track]);
+			pt_bin = bins->GetPtBin(Abs(signed_pt_mpd[track]));
+			eta_bin = bins->GetEtaBin(eta_mpd[track]);
 			if ( (eta_bin == -1) || (pt_bin == -1 )) continue;
 			if (n_hits_mpd[track] < Cut_No_Of_hits_min) continue; //n hits in TPC per track cut
 			
@@ -706,8 +709,8 @@ void MpdCalculator::CalculateFlow(Int_t nevents, TString fitFile)
 				//~ /(energy_mc[id_from_mc_mpd[track]] - pz_mc[id_from_mc_mpd[track]]));
 			Float_t Rapidity = TMath::Log( (TMath::Sqrt(p_mass2[sort]+Pt*Pt*TMath::CosH(Eta)*TMath::CosH(Eta))+Pt*TMath::SinH(Eta))/( TMath::Sqrt(p_mass2[sort]+Pt*Pt)) );
 			
-			Int_t pt_bin = GetPtBin(Pt);
-			Int_t eta_bin = GetEtaBin(Eta);
+			Int_t pt_bin = bins->GetPtBin(Pt);
+			Int_t eta_bin = bins->GetEtaBin(Eta);
 			if ( (eta_bin == -1) || (pt_bin == -1 )) continue;
 			
 			//if (TMath::Abs(DCA_x_mpd[track]) >= f_dca[0][pt_bin][eta_bin]->GetParameter(2)*2) continue;
@@ -775,8 +778,8 @@ void MpdCalculator::CalculateFlow(Int_t nevents, TString fitFile)
 			Float_t Phi = ATan2(py_mc[track],px_mc[track]);
 			Float_t Rapidity = .5*TMath::Log((energy_mc[track] + pz_mc[track])/(energy_mc[track] - pz_mc[track]));
 			
-			Int_t pt_bin = GetPtBin(Pt);
-			Int_t eta_bin = GetEtaBin(Eta);
+			Int_t pt_bin = bins->GetPtBin(Pt);
+			Int_t eta_bin = bins->GetEtaBin(Eta);
 			if ( (eta_bin == -1) || (pt_bin == -1 )) continue;
 			if (mother_ID_mc[track] > -1 ) continue;
 			
@@ -1073,22 +1076,4 @@ Int_t MpdCalculator::GetMultiplicityTPC() //should be called in loop over events
 		multiplicity++; //multiplicity in TPC before eta, nhits and pt cuts, but after mother ID cut
 	}
 	return multiplicity;
-}
-
-int MpdCalculator::GetPtBin(Float_t pt)
-{
-	int pt_bin = -1;
-	for (int i = 0; i < NptBins; ++i)
-	if ((pt > ptBins[i]) && (pt <= ptBins[i + 1])) 
-		pt_bin = i;
-	return pt_bin;
-}
-
-int MpdCalculator::GetEtaBin(Float_t eta)
-{
-	int eta_bin = -1;
-	for (int i = 0; i < NetaBins; ++i)
-	if ((eta > etaBins[i]) && (eta <= etaBins[i + 1])) 
-		eta_bin = i;
-	return eta_bin;
 }

@@ -2,7 +2,7 @@
 
 #define MPD_CALCULATOR_H
 
-#include "../Utilities/utility.h"
+#include "../Utilities/utility.C"
 
 class MpdCalculator
 {
@@ -73,6 +73,7 @@ private:
 	Float_t DCA_x_mpd[_MAX_TRACKS];
 	Float_t DCA_y_mpd[_MAX_TRACKS];
 	Float_t DCA_z_mpd[_MAX_TRACKS];
+    BinningData* bins;
 
 	Double_t GetPsiHalfTpc(EPParticle* event_plane_buffer, Int_t buffer_size, Int_t sign, Int_t harm, Double_t &Qx, Double_t &Qy); //if sign == 1 then its positive pseudorapidity and all weights are positive
 	Double_t GetPsiHalfZdc(Float_t* zdc_energy, Int_t zdc_ID, Int_t n, Double_t &qx, Double_t &qy);
@@ -95,8 +96,6 @@ public:
 	Int_t GetCentralityBinRes(Int_t multiplicity);
 	Int_t GetCentralityBinFlow(Int_t multiplicity);
 	Int_t GetMultiplicityTPC();
-	int GetPtBin(Float_t pt);
-	int GetEtaBin(Float_t eta);
 };
 
 #endif

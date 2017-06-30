@@ -15,14 +15,16 @@
 
 #include <iostream>
 
+#include "../Utilities/utility.h"
+
 void get_multiplicity(TString inFileName , TString outFileName , TString dcaFileName)
 {
 
-	const float pt_bins[] = {0.,0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.5, 3.};
-	const int n_pt_bin = 12;
+	BinningData* bins = new BinningData;
+	FormKinematicBins(bins);
 
-	const float eta_bins[] = {-1.5,-1.2,-1.,-0.8,-0.6,-0.4,-0.2,0.,0.2,0.4,0.6,0.8,1.,1.2,1.5};
-	const int n_eta_bin = 14;
+	const int n_pt_bin = bins->GetPtBinSize();
+	const int n_eta_bin = bins->GetEtaBinSize();
 
 	const Int_t   n_proj    = 3;
 	const Int_t   n_hit_cut = 32;
@@ -75,15 +77,11 @@ void get_multiplicity(TString inFileName , TString outFileName , TString dcaFile
 			MpdTrack* mpdtrack = (MpdTrack*) MpdGlobalTracks->UncheckedAt(track);
 			
 			
-			pt_bin=-1;
-			eta_bin=-1;
+			pt_bin=bins->GetPtBin(TMath::Abs(mpdtrack->GetPt()));
+			eta_bin=bins->GetEtaBin(mpdtrack->GetEta());
+			
 			if (mpdtrack->GetNofHits()<n_hit_cut) continue;
-
-			for (Int_t i_pt=0;i_pt<n_pt_bin;i_pt++)
-				if (TMath::Abs(mpdtrack->GetPt())>=pt_bins[i_pt] && TMath::Abs(mpdtrack->GetPt())<=pt_bins[i_pt+1]) pt_bin=i_pt;
-			for (Int_t i_eta=0;i_eta<n_eta_bin;i_eta++)
-				if (mpdtrack->GetEta()>eta_bins[i_eta] && mpdtrack->GetEta()<=eta_bins[i_eta+1]) eta_bin=i_eta;
-
+			
 			if (pt_bin==-1) continue;
 			if (eta_bin==-1) continue;
 			Double_t Pt = TMath::Abs(mpdtrack->GetPt());
@@ -113,4 +111,5 @@ void get_multiplicity(TString inFileName , TString outFileName , TString dcaFile
 	h_multiplicity->Write();
 	h_mult_compare->Write();
 	h_mult_old    ->Write();
+	
 }

@@ -9,19 +9,16 @@
 
 #include <iostream>
 
-int GetPtBin(Float_t pt);
-int GetEtaBin(Float_t eta);
-
-const float ptBins[] = {0.,0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.5, 3.};
-const int NptBins = 12;
-
-const float etaBins[] = {-1.5,-1.2,-1.,-0.8,-0.6,-0.4,-0.2,0.,0.2,0.4,0.6,0.8,1.,1.2,1.5};
-const int NetaBins = 14;
-
-const int Ndim = 3;
+#include "../Utilities/utility.h"
 
 void get_fit(TString inFileName , TString outFileName)
 {
+	BinningData* bins = new BinningData;
+	FormKinematicBins(bins);
+
+	const int NptBins = bins->GetPtBinSize();
+	const int NetaBins = bins->GetEtaBinSize();
+
 	TH1F* h_dca[Ndim][NptBins][NetaBins];
 	TF1 *dca_fit[Ndim][NptBins][NetaBins];
 	
