@@ -45,6 +45,8 @@ const Int_t   n_pt_bin = 12;
 
 const Float_t eta_bins[]={-1.5,-1.2,-1.,-0.8,-0.6,-0.4,-0.2,0.,0.2,0.4,0.6,0.8,1.,1.2,1.5};
 const Int_t   n_eta_bin = 14;*/
+const int n_pt_bin = NptBins;
+const int n_eta_bin = NetaBins;
 const Int_t   n_proj    = Ndim;
 
 const Int_t   n_hits_cut= 32;
@@ -70,9 +72,6 @@ class reducedTreeCreator
 
 		long int mc_side[_MAX_TRACKS][10];
 		long int mpd_side[_MAX_TRACKS];
-
-		const int n_pt_bin = NptBins;
-		const int n_eta_bin = NetaBins;
 
 		TFile* dcaFile;
 		//TF1*   f_dca[n_proj][n_pt_bin][n_eta_bin];
@@ -132,6 +131,8 @@ class reducedTreeCreator
 		Float_t p_mpd[_MAX_TRACKS];
 		Int_t centrality_tpc_mpd;
 
+		BinningData* bins;
+
 		
 		FairMCEventHeader *MCHeader;
 		TClonesArray *MCTracks;
@@ -150,7 +151,7 @@ class reducedTreeCreator
 reducedTreeCreator::reducedTreeCreator(TString inFileHistName, TString inFileTreeName, TString outFileName , TString dcaFileName)
 {
 
-	BinningData* bins = new BinningData();
+	bins = new BinningData();
 	FormKinematicBins(bins);
 
 	inFile = new TFile(inFileTreeName.Data(),"READ");
