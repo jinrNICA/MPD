@@ -71,11 +71,8 @@ class reducedTreeCreator
 		long int mc_side[_MAX_TRACKS][10];
 		long int mpd_side[_MAX_TRACKS];
 
-		BinningData* bins = new BinningData();
-		FormKinematicBins(bins);
-
-		const int n_pt_bin = bins->GetPtBinSize();
-		const int n_eta_bin = bins->GetEtaBinSize();
+		const int n_pt_bin = NptBins;
+		const int n_eta_bin = NetaBins;
 
 		TFile* dcaFile;
 		//TF1*   f_dca[n_proj][n_pt_bin][n_eta_bin];
@@ -152,6 +149,9 @@ class reducedTreeCreator
 
 reducedTreeCreator::reducedTreeCreator(TString inFileHistName, TString inFileTreeName, TString outFileName , TString dcaFileName)
 {
+
+	BinningData* bins = new BinningData();
+	FormKinematicBins(bins);
 
 	inFile = new TFile(inFileTreeName.Data(),"READ");
 	inTree = (TTree*) inFile->Get("cbmsim");
@@ -328,14 +328,10 @@ void reducedTreeCreator::CreateReducedTree()
 	    for (Int_t track = 0;track<MpdGlobalTracks->GetEntriesFast();track++){
 		MpdTrack* mpdtrack = (MpdTrack*) MpdGlobalTracks->UncheckedAt(track);
 		
-		n_pt=-1;
-		n_eta=-1;
-		if (mpdtrack->GetNofHits()<n_hits_cut) continue;
+		n_pt=bins->GetPtBin(TMath::Abs(mpdtrack->GetPt()));
+		n_eta=bins->GetEtaBin(mpdtrack->GetEta());
 
-		for (Int_t i_pt=0;i_pt<n_pt_bin;i_pt++)
-		    if (TMath::Abs(mpdtrack->GetPt())>pt_bins[i_pt] && TMath::Abs(mpdtrack->GetPt())<=pt_bins[i_pt+1]) n_pt=i_pt;
-		for (Int_t i_eta=0;i_eta<n_eta_bin;i_eta++)
-		    if (mpdtrack->GetEta()>eta_bins[i_eta] && mpdtrack->GetEta()<=eta_bins[i_eta+1]) n_eta=i_eta;
+		if (mpdtrack->GetNofHits()<n_hits_cut) continue;
 
 		if (n_pt==-1) continue;
 		if (n_eta==-1) continue;
