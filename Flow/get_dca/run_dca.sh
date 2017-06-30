@@ -15,6 +15,6 @@ cd /lustre/nyx/hades/user/parfenov/get-dca/
 root -l rootlogon.C 1>>$LOG 2>>$LOG <<EOF
 gROOT->LoadMacro("$VMCWORKDIR/macro/mpd/mpdloadlibs.C")
 mpdloadlibs(kTRUE,kTRUE)
-.L get_dca_c.so
+.L get_dca_cxx.so
 get_dca("$INFILE","$OUTFILE")
 EOF

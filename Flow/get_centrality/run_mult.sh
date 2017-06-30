@@ -16,6 +16,6 @@ cd /lustre/nyx/hades/user/parfenov/get-multiplicity/
 root -l rootlogon.C 1>>$LOG 2>>$LOG <<EOF
 gROOT->LoadMacro("$VMCWORKDIR/macro/mpd/mpdloadlibs.C")
 mpdloadlibs(kTRUE,kTRUE)
-.L get_multiplicity_c.so
+.L get_multiplicity_cxx.so
 get_multiplicity("$INFILE","$OUTFILE","$DCAFILE")
 EOF

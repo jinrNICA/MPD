@@ -65,4 +65,3 @@ $(OBJECTS): % : %.cc
 
 clean:
 	rm -vf $(OBJECTS)
-
