@@ -15,16 +15,17 @@
 #include <TMath.h>
 #include <TMatrixD.h>
 #include <TVector3.h>
-#include "TGeoManager.h"
-#include "TGeoBBox.h"
-#include "TGeoTube.h"
+#include <TGeoManager.h>
+#include <TGeoBBox.h>
+#include <TGeoTube.h>
 
-#include <set>
 #include <iostream>
-#include <algorithm>
-#include <vector>
+
+#include "restore_dca.h"
 
 #define UNDEFINED_DCA -9999
+
+const Double_t F_CUR0 = 0.3 * 0.01 * 5 / 10; // 5kG
 
 MpdHelix MakeHelix(const MpdKalmanTrack *tr) 
 {
@@ -33,8 +34,7 @@ MpdHelix MakeHelix(const MpdKalmanTrack *tr)
     Double_t x = r * TMath::Cos(phi);
     Double_t y = r * TMath::Sin(phi);
     Double_t dip = tr->GetParam(3);
-    Double_t cur = 0.3 * 0.01 * 5 / 10; // 5 kG
-    cur *= TMath::Abs (tr->GetParam(4));
+    Double_t cur = F_CUR0 * TMath::Abs (tr->GetParam(4));
     TVector3 o(x, y, tr->GetParam(1));
     Int_t h = (Int_t) TMath::Sign(1.1,tr->GetParam(4));
     MpdHelix helix(cur, dip, tr->GetParam(2)-TMath::PiOver2()*h, o, h);
@@ -53,26 +53,44 @@ void fill_zeroes(TClonesArray *MpdGlobalTracks)
     }
 }
 
-void restore_dca(TString inFileName, TString outFileName)
+void restore_dca(TTree *inTree, TTree *outTree,
+                 TClonesArray *mpdKalmanTracks, TClonesArray *MCTracks,
+                 MpdEvent *MPDEvent, TClonesArray *vertexes)
 {
-	TFile *inFile = new TFile(inFileName.Data(),"READ");
-	TTree *inTree = (TTree*) inFile->Get("cbmsim");
-	
-    TFile *outFile = new TFile(outFileName.Data(),"RECREATE");
-    TTree *outTree = inTree->CloneTree(0);
+    if (!inTree)
+    {
+        cout << "restore_dca(TTree *inTree, TTree *outTree, TClonesArray *mpdKalmanTracks, TClonesArray *MCTracks, MpdEvent *MPDEvent, TClonesArray *vertexes) Error - inTree is NULL" << endl;
+        return;
+    }
+    if (!outTree)
+    {
+        cout << "restore_dca(TTree *inTree, TTree *outTree, TClonesArray *mpdKalmanTracks, TClonesArray *MCTracks, MpdEvent *MPDEvent, TClonesArray *vertexes) Error - outTree is NULL" << endl;
+        return;
+    }
+    if (!mpdKalmanTracks)
+    {
+        cout << "restore_dca(TTree *inTree, TTree *outTree, TClonesArray *mpdKalmanTracks, TClonesArray *MCTracks, MpdEvent *MPDEvent, TClonesArray *vertexes) Error - mpdKalmanTracks is NULL" << endl;
+        return;
+    }
+    if (!MCTracks)
+    {
+        cout << "restore_dca(TTree *inTree, TTree *outTree, TClonesArray *mpdKalmanTracks, TClonesArray *MCTracks, MpdEvent *MPDEvent, TClonesArray *vertexes) Error - MCTracks is NULL" << endl;
+        return;
+    }
+    if (!MPDEvent)
+    {
+        cout << "restore_dca(TTree *inTree, TTree *outTree, TClonesArray *mpdKalmanTracks, TClonesArray *MCTracks, MpdEvent *MPDEvent, TClonesArray *vertexes) Error - MPDEvent is NULL" << endl;
+        return;
+    }
+    if (!vertexes)
+    {
+        cout << "restore_dca(TTree *inTree, TTree *outTree, TClonesArray *mpdKalmanTracks, TClonesArray *MCTracks, MpdEvent *MPDEvent, TClonesArray *vertexes) Error - vertexes is NULL" << endl;
+        return;
+    }
     
-	TClonesArray *mpdKalmanTracks = (TClonesArray*) inFile->FindObjectAny("TpcKalmanTrack");
-	inTree->SetBranchAddress("TpcKalmanTrack",&mpdKalmanTracks);
-	TClonesArray *MCTracks=0;
-	inTree->SetBranchAddress("MCTrack", &MCTracks);
-	MpdEvent *MPDEvent=0;
-	inTree->SetBranchAddress("MPDEvent.", &MPDEvent);
-	TClonesArray *MpdGlobalTracks=0;
-    TClonesArray *vertexes = (TClonesArray*) inFile->FindObjectAny("Vertex");
-	inTree->SetBranchAddress("Vertex",&vertexes);
-	
-	Int_t n_entries = inTree->GetEntries();
-    //n_entries = 100;
+    TClonesArray *MpdGlobalTracks=0;
+    Int_t n_entries = inTree->GetEntries();
+
     for (int event = 0; event < n_entries; ++event)
     {
 		cout << "EVENT N "<< event <<endl;
@@ -85,12 +103,23 @@ void restore_dca(TString inFileName, TString outFileName)
 		TVector3 primaryVertex;
         vertex->Position(primaryVertex);
         
-        if (nGlobalTracks != nKalmanTracks) { cout << "no bijection..." << endl; fill_zeroes(MpdGlobalTracks); continue; }
+        if (nGlobalTracks != nKalmanTracks)
+        {
+            cout << "no bijection..." << endl;
+            fill_zeroes(MpdGlobalTracks);
+            continue;
+        }
+        
         for (Long_t track = 0; track < nKalmanTracks; ++track)
 		{
             MpdKalmanTrack *kalmanTrack = (MpdKalmanTrack*) mpdKalmanTracks->UncheckedAt(track);
 			MpdTrack *mpdtrack = (MpdTrack*) MpdGlobalTracks->UncheckedAt(track); 
-            if ((Int_t) mpdtrack->GetID() != (Int_t) kalmanTrack->GetTrackID()) { cout << "tracks' ids are messed up..." << endl; fill_zeroes(MpdGlobalTracks); break; }
+            if ((Int_t) mpdtrack->GetID() != (Int_t) kalmanTrack->GetTrackID())
+            {
+                cout << "tracks' ids are messed up..." << endl;
+                fill_zeroes(MpdGlobalTracks);
+                break;
+            }
             
             MpdHelix helix = MakeHelix(kalmanTrack);
 			Double_t pathLength = helix.pathLength(primaryVertex);
@@ -104,8 +133,34 @@ void restore_dca(TString inFileName, TString outFileName)
         outTree->Fill();
 	}
     outTree->AutoSave();
+}
+
+void restore_dca(const TString &inFileName, const TString &inFileTreeName, const TString &outFileName, const TString &mpdKalmanTracksBranchName,
+                 const TString &MCTracksBranchName, const TString &MPDEventName, const TString &vertexesBranchName)
+{
+    TFile *inFile = new TFile(inFileName.Data(),"READ");
+	TTree *inTree = (TTree*) inFile->Get(inFileTreeName);
 	
+    TFile *outFile = new TFile(outFileName.Data(),"RECREATE");
+    TTree *outTree = inTree->CloneTree(0);
+    
+    TClonesArray *mpdKalmanTracks = (TClonesArray*) inFile->FindObjectAny(mpdKalmanTracksBranchName);
+	inTree->SetBranchAddress(mpdKalmanTracksBranchName, &mpdKalmanTracks);
+	TClonesArray *MCTracks=0;
+	inTree->SetBranchAddress(MCTracksBranchName, &MCTracks);
+	MpdEvent *MPDEvent=0;
+	inTree->SetBranchAddress(MPDEventName, &MPDEvent);
+    TClonesArray *vertexes = (TClonesArray*) inFile->FindObjectAny(vertexesBranchName);
+	inTree->SetBranchAddress(vertexesBranchName, &vertexes);
+    
+    restore_dca(inTree, outTree, mpdKalmanTracks, MCTracks, MPDEvent, vertexes);
+    
     inFile->Close();
     outFile->Close();
 	return;
+}
+
+void restore_dca(const TString &inFileName, const TString &outFileName)
+{
+    restore_dca(inFileName, DCA_INPUT_TREE_NAME, outFileName, MPD_KALMAN_TRACKS_BRANCH_NAME, MC_TRACK_BRANCH_NAME, MPD_EVENT_TRACKS_BRANCH_NAME, VERTEXES_BRANCH_NAME);
 }
