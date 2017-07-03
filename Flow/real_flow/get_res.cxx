@@ -3,8 +3,8 @@
 void get_res(TString inFileName , TString outFileName)
 {
 	
-	gSystem->Load("./utility_C.so");
-	gSystem->Load("./MpdCalculator_C.so");
+	gSystem->Load("../Utilities/utility_cxx.so");
+	gSystem->Load("./MpdCalculator_cxx.so");
 		
 	TFile *inFile = new TFile(inFileName.Data());
 	TFile *outFile = new TFile(outFileName.Data(),"RECREATE");

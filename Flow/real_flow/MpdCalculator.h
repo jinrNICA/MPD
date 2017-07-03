@@ -2,7 +2,7 @@
 
 #define MPD_CALCULATOR_H
 
-#include "../Utilities/utility.C"
+#include "../Utilities/utility.cxx"
 
 class MpdCalculator
 {

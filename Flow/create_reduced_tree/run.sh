@@ -10,7 +10,7 @@ DCAFILE=$4
 
 LOG=${OUTFILE%.*}.log
 
-cd /lustre/nyx/hades/user/parfenov/check-dca/
+#cd /lustre/nyx/hades/user/parfenov/check-dca/
 
 . /lustre/nyx/hades/user/parfenov/Soft/MPDRoot/build/config.sh
 

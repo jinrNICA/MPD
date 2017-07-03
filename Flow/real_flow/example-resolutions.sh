@@ -7,7 +7,7 @@ DCAFILE=$3
 #SBATCH --time=0:15:00
 #SBATCH -D /tmp
 
-PROJECT_DIR=/lustre/nyx/hades/user/parfenov/real-flow/
+PROJECT_DIR=$PWD #/lustre/nyx/hades/user/parfenov/real-flow/
 
 #. /lustre/nyx/hades/user/parfenov/Soft/MPDRoot/build/config.sh
 source /cvmfs/hades.gsi.de/install/5.34.34/hydra2-4.9n/defall.sh
