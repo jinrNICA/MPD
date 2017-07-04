@@ -1,4 +1,6 @@
-//!!!!!!!!!!!!!!!!!!!!!!
+//////////////////////////////////////////////////
+//See MpdCalculator.h for comments		        //
+//////////////////////////////////////////////////
 #include "MpdCalculator.h"
 
 MpdCalculator::MpdCalculator(TString inFileName , TString outFileName, TString dcaFileName)

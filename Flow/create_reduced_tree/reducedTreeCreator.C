@@ -1,3 +1,21 @@
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Class reducedTreeCreator converts cbmsim trees into standard TTree cbmsim_reduced									//
+// 	cbmsim_reduced works ~1000 times faster than cmbsim and contains all needed information for the analysis		//
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//USAGE:																											//
+//root -l rootlogon.C																								//
+//  gROOT->LoadMacro("$VMCWORKDIR/macro/mpd/mpdloadlibs.C")															//
+//  mpdloadlibs(kTRUE,kTRUE)																						//
+//  .L reducedTreeCreator.C+																						//
+//  reducedTreeCreator rtc = reducedTreeCreator("inFileHistName", "inFileTreeName", "outFileName", "dcaFileName")	//
+//	rtc.CreateReducedTree()																							//
+//ARGUMENTS:																										//
+// inFileHistName - input standard root file with TH1* histograms of multiplicity (output get_multiplicity(...))	//
+// inFileTreeName - input cbmsim tree with corrected dca values (output restore_dca(...))							//
+// outFileName    - output standard root file with TTree cbmsim_reduced for the further analysis					//
+// dcaFileName - Second iteration of the dca fitting containing sigma_pt_fit TF1* functions (output MakeFitDCA(...))//
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 #define _N2_ZDC 225
 #define _N_ZDC 15
 #define _N_MODULES_TOTAL 90
@@ -32,6 +50,7 @@
 #include <MpdKalmanTrack.h> 
 #include <MpdVertex.h>
 
+//Including necessary classes & constants
 #include "../Utilities/utility.h"
 
 using std::cout;
@@ -40,17 +59,14 @@ using TMath::ATan2;
 
 #define	NmultiplicityBins 100
 
-/*const Float_t pt_bins[]={0.,0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.5, 3.};
-const Int_t   n_pt_bin = 12;
-
-const Float_t eta_bins[]={-1.5,-1.2,-1.,-0.8,-0.6,-0.4,-0.2,0.,0.2,0.4,0.6,0.8,1.,1.2,1.5};
-const Int_t   n_eta_bin = 14;*/
+//Used constants
 const int n_pt_bin = NptBins;
 const int n_eta_bin = NetaBins;
 const Int_t   n_proj    = Ndim;
 
 const Int_t   n_hits_cut= 32;
 
+//Class structure
 class reducedTreeCreator
 {
 	public:
@@ -148,6 +164,7 @@ class reducedTreeCreator
 		TH1F *h_multiplicity_before;
 };
 
+//Class Constructor. Initialize all used files and creates output TTree.
 reducedTreeCreator::reducedTreeCreator(TString inFileHistName, TString inFileTreeName, TString outFileName , TString dcaFileName)
 {
 
@@ -263,6 +280,7 @@ reducedTreeCreator::reducedTreeCreator(TString inFileHistName, TString inFileTre
 	for (int i = 0; i <= NmultiplicityBins; ++i) cout << "multiplicity bin = " << multiplicity_bins[i] << endl;
 }
 
+//Main method of the class. Fills all reconstructed data into output TTree.
 void reducedTreeCreator::CreateReducedTree()
 {
 	Int_t n_pt;
@@ -439,6 +457,7 @@ void reducedTreeCreator::CreateReducedTree()
     outFile->Close();
 }
 
+//Additional method for GetCentrality. Integrate multiplicity distribution from inFileHistName.
 Float_t reducedTreeCreator::integrate(TH1F *h, Int_t max_bin, Float_t sum)
 {
 	for (Int_t mult_bin = 1; mult_bin <= max_bin; ++mult_bin)
@@ -452,6 +471,8 @@ Float_t reducedTreeCreator::integrate(TH1F *h, Int_t max_bin, Float_t sum)
 	return max_bin;
 }
 
+
+//Additional method for CreateReducedTree. Fills all monte-carlo track data.
 bool reducedTreeCreator::FillTrack(FairMCTrack *mctrack, long int j, int &m)
 {
 	for (int k = 0; k < 10; ++k) //CHECK WHETHER MC TRACK IS ASSOCIATED WITH ANY MPDTRACKS AND TAKE FIRST IF IT IS
@@ -482,6 +503,7 @@ bool reducedTreeCreator::FillTrack(FairMCTrack *mctrack, long int j, int &m)
 	return false; //MC TRACK IS NOT ASSOCIATED WITH ANY MPDTRACKS -> TRACK IS NOT WRITTEN INTO FINAL TREE -> FALSE
 }
 
+//Returns centrality values based on the centrality binning stored in ../Utilities/utility.h and multiplicity distribution from inFileHistName.
 Int_t reducedTreeCreator::GetCentrality(Int_t multiplicity)
 {
 	int centrality_bin = -1;

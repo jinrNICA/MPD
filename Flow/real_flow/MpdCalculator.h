@@ -1,13 +1,49 @@
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Class MpdCalculator contains the required methods for the flow analysis. There're two main procedures:   			            //
+// 	1. Calculate resolution factor correction (Requires to run get_res.cxx afterwards!!!)                      		            //
+//  2. Calculate azimuthal flow v1 and v2 using Event Plane method.                                                             //
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//USAGE:    can be executed via standard root																		            //
+//root -l               																							            //
+//  gSystem->Load("libMathMore")                                                                                                //
+//  .L ../Utilities/BinningData.cxx+                    															            //
+//  .L ../Utilities/utility.cxx+																					            //
+//  .L MpdCalculator.cxx+   																						            //
+///////CALCULATE RESOLUTION FACTOR CORRECTION/////////////////////////////////////////////////////////////////////////////////////
+//                                                                                                                              //
+//  MpdCalculator mpd = MpdCalculator(inFileName,outFileName,dcaFileName)                                         	            //
+//	mpd.CalculateResolutions(0) 																					            //
+//  mpd.Write()                                                                                                                 //
+//  !!!!!!!!!!!!RUN get_res.cxx!!!!!!!!!!!                                                                                      //
+//ARGUMENTS:																										            //
+// inFileName - input standard root file with TTree cbmsim_reduced for the further analysis (output from reducedTreeCreator)    //
+// outFileName - output standard root file with TProfiles and histograms containing data for resolution correction factor       //
+// dcaFileName - Second iteration of the dca fitting containing sigma_pt_fit TF1* functions (output MakeFitDCA(...))            //
+//                                                                                                                              //
+///////CALCULATE AZIMUTHAL FLOW///////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                                                              //
+//  MpdCalculator mpd = MpdCalculator(inFileName,outFileName,dcaFileName)                                         	            //
+//	mpd.CalculateFlow(0, resFitFile.Data())			    															            //
+//ARGUMENTS:																										            //
+// inFileName - input standard root file with TTree cbmsim_reduced for the further analysis (output from reducedTreeCreator)    //
+// outFileName - output standard root file with TProfiles and histograms containing data with azimuthal flow (v1 and v2)        //
+// dcaFileName - Second iteration of the dca fitting containing sigma_pt_fit TF1* functions (output MakeFitDCA(...))            //
+// resFitFile - input standard root file with TH1* histograms and TF1* fitted function of resolution (output from get_res(...)) //
+//                                                                                                                              //
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 #ifndef MPD_CALCULATOR_H
 
 #define MPD_CALCULATOR_H
 
+//Including necessary classes & constants
 #include "../Utilities/utility.cxx"
 
 class MpdCalculator
 {
 private:
 
+    //Used varables
 	TString inFileName;
 	TString outFileName;
 
@@ -15,7 +51,7 @@ private:
 	TFile *outFile;
 	
 	TFile  *dcaFile;
-
+    //Histograms
     TH1F	 *h_pt[NcentralityBinsRes][_N_SORTS], *h_eta[NcentralityBinsRes][_N_SORTS], *h_phi[NcentralityBinsRes][_N_SORTS];//
     TH1F	 *h_pt_mc[NcentralityBinsRes][_N_SORTS], *h_eta_mc[NcentralityBinsRes][_N_SORTS], *h_phi_mc[NcentralityBinsRes][_N_SORTS];//
     TH1F	 *h_pt_after[NcentralityBinsRes][_N_SORTS], *h_eta_after[NcentralityBinsRes][_N_SORTS], *h_phi_after[NcentralityBinsRes][_N_SORTS];//
@@ -31,15 +67,19 @@ private:
     
     //TF1 	 *f_dca[Ndim][NptBins][NetaBins];
     TF1         *f_pt_fit[Ndim][NetaBins];
-
+    //Profiles
     TProfile *p_Res2Psi_vs_b[_N_HARM][_N_HARM][_N_METHOD];//
     TProfile *p_true_Res_vs_b[_N_HARM][_N_HARM][_N_METHOD];//
     TProfile *p_true_Res_half_vs_b[_N_ARM][_N_HARM][_N_HARM][_N_METHOD];//
     TProfile *p_qx_vs_b[_N_ARM][_N_HARM][_N_METHOD];//
     TProfile *p_qy_vs_b[_N_ARM][_N_HARM][_N_METHOD];//
     TProfile *p_flow_wrt_full_vs_centrality[_N_HARM][_N_HARM][_N_METHOD], *p_flow_wrt_full_vs_pt[NcentralityBinsFlow][_N_HARM][_N_HARM][_N_METHOD], *p_flow_wrt_full_vs_eta[NcentralityBinsFlow][_N_HARM][_N_HARM][_N_METHOD], *p_flow_wrt_full_vs_rapidity[NcentralityBinsFlow][_N_HARM][_N_HARM][_N_METHOD];
+    //////////         RESULTED AZIMUTHAL FLOW            //////////
+    //Reconstructed (realistic values) 
     TProfile *p_flow_wrt_full_vs_centrality_divided[_N_HARM][_N_HARM][_N_METHOD], *p_flow_wrt_full_vs_pt_divided[NcentralityBinsFlow][_N_HARM][_N_HARM][_N_METHOD], *p_flow_wrt_full_vs_eta_divided[NcentralityBinsFlow][_N_HARM][_N_HARM][_N_METHOD], *p_flow_wrt_full_vs_rapidity_divided[NcentralityBinsFlow][_N_HARM][_N_HARM][_N_METHOD];
+    //Generated (idealisic values)
     TProfile *p_flow_wrt_RP_vs_centrality[_N_HARM], *p_flow_wrt_RP_vs_pt[NcentralityBinsFlow][_N_HARM], *p_flow_wrt_RP_vs_eta[NcentralityBinsFlow][_N_HARM], *p_flow_wrt_RP_vs_rapidity[NcentralityBinsFlow][_N_HARM];
+    ////////////////////////////////////////////////////////////////
     TProfile *p_momenta_resolution[_N_SORTS];
     TProfile *p_b_vs_multiplicity, *p_b_vs_energy;
 
@@ -75,26 +115,46 @@ private:
 	Float_t DCA_z_mpd[_MAX_TRACKS];
     BinningData* bins;
 
+    //Calculate Event Plane  in TPC subevent (half TPC) harm = 1,2
 	Double_t GetPsiHalfTpc(EPParticle* event_plane_buffer, Int_t buffer_size, Int_t sign, Int_t harm, Double_t &Qx, Double_t &Qy); //if sign == 1 then its positive pseudorapidity and all weights are positive
-	Double_t GetPsiHalfZdc(Float_t* zdc_energy, Int_t zdc_ID, Int_t n, Double_t &qx, Double_t &qy);
-	Double_t GetPsiFullTpc(EPParticle* event_plane_buffer, Int_t buffer_size, Int_t harm);
+	//Calculate Event Plane  in FHCla subevent (half FHCal) harm = 1,2
+    Double_t GetPsiHalfZdc(Float_t* zdc_energy, Int_t zdc_ID, Int_t n, Double_t &qx, Double_t &qy);
+    //Calculate Event plane in all TPC harm = 1,2
+	Double_t GetPsiFullTpc(EPParticle* event_plane_buffer, Int_t buffer_size, Int_t harm); //harm = 
+    //Calculate Event plane in all FHCal n = 1,2
 	Double_t GetPsiFullZdc(Float_t* zdc_energy, Int_t n);
+    //Normalize factor for Q vector calculated in TPC
 	Double_t GetTotalMomenta(EPParticle* event_plane_buffer, Int_t buffer_size, Int_t sign);
+    //Calculate Q vector in TPC harm = 1,2 
 	void GetQsTpc(EPParticle* event_plane_buffer, Int_t buffer_size, Int_t sign, Int_t harm, Double_t &Qx, Double_t &Qy);
+    //Calculate Q vector in FHCal harm = 1,2
 	void GetQsZdc(Float_t* zdc_energy, Int_t zdc_ID, Int_t harm, Double_t &Qx, Double_t &Qy);
+    //Normalize factor for Q vector calculated in FHCal
 	Double_t GetTotalEnergy(Float_t* zdc_energy, Int_t zdc_ID);
+    //Cuts for flow analysis
 	bool FlowCut(Float_t eta, Float_t pt, Int_t pdg, Int_t goal);
 
 public:
 
+    //Constructor of the MpdCalculator class
 	MpdCalculator(TString inFileName, TString outFileName, TString dcaFileName);
+    //Fill and calculate Event plane related values from TPC detector
 	void FillTPC(Int_t centrality_bin, EPParticle *event_plane_buffer, Int_t ep_particle_count);
+    //Fill and calculate Event plane related values from FHCal detector
 	void FillZDC(Int_t centrality_bin, Float_t *ZDC_energy_mpd);
+    ////////////////////////////////EXTERNAL USE/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //Calculate values for get_res(...) for resolution correction factor
 	void CalculateResolutions(Int_t nevents = 0);
+    //Calculate azimuthal flow with resolution correction factor for reconstructed (close to experimental) and generated (idealisitc values from the model - no detector effects)
 	void CalculateFlow(Int_t nevents, TString fitFile);
+    ///////////////////////////////EXTERNAL USE//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //Write result in output standard root file outFileName
 	void Write();
+    //Centrality binning for resolution correction factor
 	Int_t GetCentralityBinRes(Int_t multiplicity);
+    //Centrality binning for azimuthal flow (v1 and v2)
 	Int_t GetCentralityBinFlow(Int_t multiplicity);
+    //Additional method for work with multiplicity distribution
 	Int_t GetMultiplicityTPC();
 };
 
