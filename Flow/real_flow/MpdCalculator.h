@@ -24,6 +24,7 @@
 //                                                                                                                              //
 //  MpdCalculator mpd = MpdCalculator(inFileName,outFileName,dcaFileName)                                         	            //
 //	mpd.CalculateFlow(0, resFitFile.Data())			    															            //
+//  mpd.Write()                                                                                                                 //
 //ARGUMENTS:																										            //
 // inFileName - input standard root file with TTree cbmsim_reduced for the further analysis (output from reducedTreeCreator)    //
 // outFileName - output standard root file with TProfiles and histograms containing data with azimuthal flow (v1 and v2)        //
