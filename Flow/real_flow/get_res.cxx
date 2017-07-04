@@ -1,10 +1,18 @@
+#include "TROOT.h"
+#include <TProfile.h>
+#include <TMath.h>
+#include <TFitResult.h>
+#include <TF1.h>
+#include <TFile.h>
+#include <TSystem.h>
+
 #include "get_res.h"
 
 void get_res(TString inFileName , TString outFileName)
 {
 	
-	gSystem->Load("../Utilities/utility_cxx.so");
-	gSystem->Load("./MpdCalculator_cxx.so");
+	//gSystem->Load("../Utilities/utility_cxx.so");
+	//gSystem->Load("./MpdCalculator_cxx.so");
 		
 	TFile *inFile = new TFile(inFileName.Data());
 	TFile *outFile = new TFile(outFileName.Data(),"RECREATE");

@@ -1,3 +1,14 @@
+#include <TMath.h>
+#include <TSystem.h>
+#include <TFile.h>
+#include <TTree.h>
+#include <TString.h>
+
+#include "TROOT.h"
+#include <TH1.h>
+
+#include <iostream>
+
 #include "MakeFitDCA.h"
 
 void MakeFitDCA(TString inFileName, TString outFileName)
