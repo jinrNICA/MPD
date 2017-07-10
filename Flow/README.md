@@ -282,7 +282,7 @@ Where the arguments are:
     `outFileName` - output standard root file with TTree cbmsim_reduced for the further analysis.  
     `dcaFileName` - Second iteration of the dca fitting containing `sigma_pt_fit TF1*` functions (output from `MakeFitDCA(...)`).  
     
-Note that with new verson of mpdroot there conflict with compilator (`FairMCEventHeader.h` and boost drectory - `$Boost_INCLUDE_DIRS` in `rootlogon.C`) , so this process can be performed via interpretator `.L reducedTreeCreator.C`. 
+Note that with new verson of mpdroot there conflict with compilator (`FaitMCPoint.h` and boost drectory - `$Boost_INCLUDE_DIRS` in `rootlogon.C`) , so this process can be performed via interpretator `.L reducedTreeCreator.C`. 
 
 Resulting file contains standard TTree cbmsim_reduced with all needed information. This TTrees works ~1000 times faster than cbmsim.  
 ***
