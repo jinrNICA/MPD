@@ -212,6 +212,7 @@ For the further analysis one does need the information about dca distributions t
 Where the arguments are:  
     `inFileName` - input cbmsim tree with corrected dca values (see `restore_dca.h`).  
     `outFileName` - output: standard root file with `TH1*` histograms needed for the further DCA cuts.  
+If compilation failed due to `FairMCEventHeader.h` not found, delete this line.
 Resulting file contains `TH1*` histograms of the dca distributions.  
 
 <center>!!! If `get_dca()` was used for several files, use `hadd` to merge `outFileName` files into 1 merged file. !!!</center>  
@@ -269,6 +270,7 @@ Resulting file contains `TH1*` histogram of multiplicity in TPC.
         -------------------in root session---------------------  
         gROOT->LoadMacro("$VMCWORKDIR/macro/mpd/mpdloadlibs.C")  
         mpdloadlibs(kTRUE,kTRUE)  
+        reducedTreeCreator.C+
         reducedTreeCreator rtc = reducedTreeCreator("inFileHistName", "inFileTreeName", "outFileName", "dcaFileName")  
         rtc.CreateReducedTree()  
         -------------------root session end--------------------  
