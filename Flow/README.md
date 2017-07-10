@@ -46,7 +46,7 @@ line 49:
         #define URQMD
 Optionally, change `auau.09gev.mbias.98k.ftn14` to `test.f14` everywhere in the code since UrQMD will be used as a particle generator.
 
-<u><big>1.4</big></u> There are 2 tracking algorithm that can be used:
+<u><big>1.5</big></u> There are 2 tracking algorithm that can be used:
 - Idealistic, called hit producer (by default);
 - Realistic, called cluster finder.
 
