@@ -52,6 +52,7 @@
 
 //Including necessary classes & constants
 #include "../Utilities/utility.h"
+#include <boost/serialization/access.hpp>
 
 using std::cout;
 using std::endl;

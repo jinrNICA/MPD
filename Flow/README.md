@@ -4,7 +4,7 @@
 
 To simulate data one needs to install correct FHCal geometry, install generator (UrQMD) and run MPDRoot simulation code.
 
-### 1. Installation of the correct FHCal geometry in the MPDRoot framework
+### 1. Installation of the correct FHCal geometry in the MPDRoot framework and MPDRoot preparation
 
 <u><big>1.1</big></u> Use branch marina_070417 in GIT repository:
 <center><a href="https://git.jinr.ru/nica/mpdroot" target="_blank">https://git.jinr.ru/nica/mpdroot</a></center>  
@@ -70,6 +70,15 @@ Also, emc tracking was not used, so lines
         fRun->AddTask(emcHP);
 can be deleted.
 
+<u><big>1.6</big></u> In further MC simulation, event plane will be generated. Thus, it requires modification in `mpdroot/base/event/FairMCEventHeader.h` (in line 62):
+
+         Double_t GetEP()    const { return fEP; }        /// Event plane
+in line 99:
+
+        Double32_t fEP;          /// Event plane smearing
+
+This lines should be added.
+
 
 ### 2. Installation of the UrQMD generator
 
@@ -130,6 +139,12 @@ or source it to the place where `config.sh` is stored.
         export LD_LIBRARY_PATH=$SIMPATH/lib:$SIMPATH/lib/root:$LD_LIBRARY_PATH  
         source geant4.sh  
         platform=(root-config --arch)  
+
+ТNote, that new versions of mpdroot and fairsoft requires one additional environment varable `Boost_INCLUDE_DIRS`:
+
+        export Boost_INCLUDE_DIRS="<path_to_fairsoft>/include/"
+
+where directory `boost/serialization/` is stored.
 
 <u><big>3.2</big></u> Simulate particles using UrQMD generator. Run `runqmd.bash` in urqmd-3.4 directory:
 
@@ -281,8 +296,7 @@ Where the arguments are:
     `inFileTreeName` - input cbmsim tree with corrected dca values (output from `restore_dca(...)`).  
     `outFileName` - output standard root file with TTree cbmsim_reduced for the further analysis.  
     `dcaFileName` - Second iteration of the dca fitting containing `sigma_pt_fit TF1*` functions (output from `MakeFitDCA(...)`).  
-    
-Note that with new verson of mpdroot there conflict with compilator (`FaitMCPoint.h` and boost drectory - `$Boost_INCLUDE_DIRS` in `rootlogon.C`) , so this process can be performed via interpretator `.L reducedTreeCreator.C`. 
+ 
 
 Resulting file contains standard TTree cbmsim_reduced with all needed information. This TTrees works ~1000 times faster than cbmsim.  
 ***
