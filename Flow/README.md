@@ -40,11 +40,33 @@ In this case information about MC tracks is lost.
 
 and recompile MPDRoot.
 
-<u><big>1.4</big></u> Finaly, one need to change `mpdroot/macro/mpd/runMC.C`:
+<u><big>1.4</big></u> One needs to change `mpdroot/macro/mpd/runMC.C`:
 line 49: 
         
         #define URQMD
 Optionally, change `auau.09gev.mbias.98k.ftn14` to `test.f14` everywhere in the code since UrQMD will be used as a particle generator.
+
+<u><big>1.4</big></u> There are 2 tracking algorithm that can be used:
+- Idealistic, called hit producer (by default);
+- Realistic, called cluster finder.
+
+To change from hit producer to cluster finder, find in `mpdroot/macro/mpd/reco.C` lines:
+
+        MpdTpcHitProducer* hitPr = new MpdTpcHitProducer();
+        hitPr->SetModular(0);
+        fRun->AddTask(hitPr);
+and change them into:
+
+        MpdTpcDigitizerAZ* tpcDigitizer = new MpdTpcDigitizerAZ();
+        tpcDigitizer->SetPersistence(kFALSE);
+        fRun->AddTask(tpcDigitizer);
+
+Also, emc tracking was not used, so lines
+
+        FairTask *emcHP = new MpdEmcHitProducer();
+        fRun->AddTask(emcHP);
+can be deleted.
+
 
 ### 2. Installation of the UrQMD generator
 
