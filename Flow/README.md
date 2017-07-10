@@ -33,6 +33,9 @@ The number of hits in each event is not more than 2x45x42 which allows to
 have rather small output root files.
 In this case information about MC tracks is lost.
 
+More information is stored here:
+<center><a href="https://git.jinr.ru/nica/mpdroot/blob/marina_070417/zdc/README" target="_blank">https://git.jinr.ru/nica/mpdroot/blob/marina_070417/zdc/README</a></center> 
+
 <u><big>1.3</big></u> For the further analysis, information  about MC tracks is needed. To have such information, one should do:
 
         cd mpdroot/zdc
@@ -212,7 +215,6 @@ For the further analysis one does need the information about dca distributions t
 Where the arguments are:  
     `inFileName` - input cbmsim tree with corrected dca values (see `restore_dca.h`).  
     `outFileName` - output: standard root file with `TH1*` histograms needed for the further DCA cuts.  
-If compilation failed due to `FairMCEventHeader.h` not found, delete this line.
 Resulting file contains `TH1*` histograms of the dca distributions.  
 
 <center>!!! If `get_dca()` was used for several files, use `hadd` to merge `outFileName` files into 1 merged file. !!!</center>  
@@ -270,7 +272,6 @@ Resulting file contains `TH1*` histogram of multiplicity in TPC.
         -------------------in root session---------------------  
         gROOT->LoadMacro("$VMCWORKDIR/macro/mpd/mpdloadlibs.C")  
         mpdloadlibs(kTRUE,kTRUE)  
-        reducedTreeCreator.C+
         reducedTreeCreator rtc = reducedTreeCreator("inFileHistName", "inFileTreeName", "outFileName", "dcaFileName")  
         rtc.CreateReducedTree()  
         -------------------root session end--------------------  
