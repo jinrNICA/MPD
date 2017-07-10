@@ -6,13 +6,52 @@ To simulate data one needs to install correct FHCal geometry, install generator 
 
 ### 1. Installation of the correct FHCal geometry in the MPDRoot framework
 
-(in progress - wait for Marina's letter)
+<u><big>1.1</big></u> Use branch marina_070417 in GIT repository:
+<center><a href="https://git.jinr.ru/nica/mpdroot" target="_blank">https://git.jinr.ru/nica/mpdroot</a></center>  
+One can download files from GIT using:
+
+        git clone git@git.jinr.ru:nica/mpdroot.git
+        git checkout marina_070417
+
+<u><big>1.2</big></u> To create corresponding root file with correct FHCal geometry for reconstruction, run:
+
+        root -l mpdroot/macro/mpd/geometry/create_rootgeom_zdc_oldnames_7sect_noSlots_v1.C
+
+Such root file will be stored in the directory `mpdroot/geometry/zdc_oldnames_7sect_noSlots_v1.root`. 
+
+Then include root file name into mpd geometry file `mpdroot/macro/mpd/geometry_stage1.C` (line 51):
+
+        Zdc->SetGeometryFileName("zdc_oldnames_7sect_noSlots_v1.root");
+
+For the only PSD performance we keep information about hits in the way:
+- FHCal number
+- module number
+- slice number (1 - 42)
+- deposited energy in slice (in the event)
+
+The number of hits in each event is not more than 2x45x42 which allows to
+have rather small output root files.
+In this case information about MC tracks is lost.
+
+<u><big>1.3</big></u> For the further analysis, information  about MC tracks is needed. To have such information, one should do:
+
+        cd mpdroot/zdc
+        cp MpdZdc.cxx.ProcHitsTracks_newgeomZDC  MpdZdc.cxx
+
+and recompile MPDRoot.
+
+<u><big>1.4</big></u> Finaly, one need to change `mpdroot/macro/mpd/runMC.C`:
+line 49: 
+        
+        #define URQMD
+Optionally, change `auau.09gev.mbias.98k.ftn14` to `test.f14` everywhere in the code since UrQMD will be used as a particle generator.
 
 ### 2. Installation of the UrQMD generator
 
 <u><big>2.1</big></u> Download urqmd.tar.gz:  
     <center><a href="http://urqmd.org/download/src/urqmd-3.4.tar.gz" target="_blank">http://urqmd.org/download/src/urqmd-3.4.tar.gz</a></center>  
 and place it in the directory.
+
 <u><big>2.2</big></u> Untar file  
 
         tar xzvvf urqmd-3.4.tar.gz  
