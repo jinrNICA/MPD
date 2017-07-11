@@ -73,7 +73,11 @@ can be deleted.
 <u><big>1.6</big></u> In further MC simulation, event plane will be generated. Thus, it requires modification in `mpdroot/base/event/FairMCEventHeader.h` (in line 62):
 
          Double_t GetEP()    const { return fEP; }        /// Event plane
-in line 99:
+
+in line 66:
+
+        void SetEP(Double_t phi)          { fEP = phi; }
+in line 90:
 
         Double32_t fEP;          /// Event plane smearing
 
